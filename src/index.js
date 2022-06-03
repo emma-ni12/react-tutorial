@@ -4,7 +4,7 @@ import './index.css';
 
 function Square(props) {
     return (
-        <button className="square" onClick={props.onClick}>
+        <button className="square" onClick={props.onClick} style={{backgroundColor: props.bg}}>
             {props.value}
         </button>
     );
@@ -12,10 +12,17 @@ function Square(props) {
   
 class Board extends React.Component {
     renderSquare(i) {
+        let bgcolor = "white";
+        if (this.props.win !== null && this.props.win !== "draw") {
+            if (this.props.win.includes(i)) {
+                bgcolor = "yellow";
+            }
+        } 
         return (
             <Square 
                 value={this.props.squares[i]}   //these are the props that get passed to Square
-                onClick={() => this.props.onClick(i)}  //this is the prop onClick, a function that calls handleClick(i)
+                onClick={() => this.props.onClick(i)} 
+                bg={bgcolor} //this is the prop onClick, a function that calls handleClick(i)
             />
         );
     }
@@ -103,7 +110,6 @@ class Game extends React.Component {
             const row = Math.floor(step.pos / 3) + 1;
             const col = step.pos % 3 + 1;
             const desc = move ? 'Go to move #' + move + ': row ' + row + ', col ' + col : 'Go to game start';
-            // const b = step.bold ? "bold" : "regular";
             return (
                 <li key={move}>
                     <button id={move} onClick={(e) => {
@@ -131,7 +137,7 @@ class Game extends React.Component {
         return (
             <div className="game">
                 <div className="game-board">
-                    <Board squares={current.squares} onClick={(i) => this.handleClick(i)}/>
+                    <Board squares={current.squares} onClick={(i) => this.handleClick(i)} win={winner}/>
                 </div>
                 <div className="game-info">
                     <div>{status}</div>
@@ -165,7 +171,7 @@ function calculateWinner(squares) {
             //     // const square = squares[index];
             //     // square.style = {backgroundColor: "yellow"};
             // });
-            return squares[a];
+            return lines[i];
         }
     }
     let draw = true;
